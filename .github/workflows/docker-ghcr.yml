@@ -53,6 +53,12 @@ jobs:
           path: |
             target/generated-docs
             target/generated-snippets
+            
+      - name: Deploy REST Docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/generated-docs
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -105,7 +111,7 @@ jobs:
 
             sed -i "s#ghcr.io/.*/.*:sha-.*#${IMAGE}:${SHA_TAG}#g" "$COMPOSE_FILE"
             docker compose -f "$COMPOSE_FILE" pull
-            docker compose -f "$COMPOSE_FILE" up -d --wait
+            docker compose --env-file ../.env -f "$COMPOSE_FILE" up -d --wait
 
             # 헬스체크
             curl -fsS http://localhost:8080/actuator/health > /dev/null
