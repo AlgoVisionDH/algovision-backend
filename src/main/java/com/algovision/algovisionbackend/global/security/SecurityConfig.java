@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/api/members/login"
                         ).permitAll()
                         .requestMatchers("/docs/**").hasRole("ADMIN")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
