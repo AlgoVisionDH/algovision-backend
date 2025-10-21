@@ -111,7 +111,7 @@ jobs:
 
             sed -i "s#ghcr.io/.*/.*:sha-.*#${IMAGE}:${SHA_TAG}#g" "$COMPOSE_FILE"
             docker compose -f "$COMPOSE_FILE" pull
-            docker compose --env-file ../.env -f "$COMPOSE_FILE" up -d --wait
+            docker compose --env-file ../.env -f "$COMPOSE_FILE" up -d
 
             # dangling 이미지 정리
             docker image prune -f
