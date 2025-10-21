@@ -1,0 +1,24 @@
+= 회원가입 API
+:toc: left
+:sectnums:
+
+== 🧾 개요
+회원가입 API는 신규 사용자를 등록하는 엔드포인트입니다.
+입력값 검증(이메일 중복, 닉네임 중복, 비밀번호 불일치 등)을 수행하며,
+정상 등록 시 새 회원의 정보를 반환합니다.
+
+== ✅ 회원가입 성공
+operation::members-signup-success[snippets='http-request,http-response,request-fields,response-fields']
+
+== ⚠️ 회원가입 실패
+
+=== 이메일 중복
+operation::members-signup-fail-duplicate-email[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 닉네임 중복
+operation::members-signup-fail-duplicate-nickname[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 비밀번호 불일치
+operation::members-signup-fail-password-mismatch[snippets='http-request,http-response,request-fields,response-fields']
+
+include::../common/error-response.adoc[]

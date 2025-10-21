@@ -1,0 +1,43 @@
+# ===============================
+# General build and IDE stuff
+# ===============================
+.git
+.gitignore
+.idea
+.vscode
+*.iml
+*.class
+*.log
+
+# ===============================
+# Maven & build outputs
+# ===============================
+target/
+out/
+build/
+
+# ===============================
+# Node / Frontend (if any)
+# ===============================
+node_modules/
+dist/
+
+# ===============================
+# OS / Editor junk
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Docs / Test artifacts
+# ===============================
+src/docs/asciidoc/
+src/test/
+**/generated-snippets/
+
+# ===============================
+# Docker / Compose artifacts
+# ===============================
+docker-compose.yml
+*.env
+logs/

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Console에 JSON 형태로 출력 -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- MDC 필드(traceId, userId 등)를 자동으로 포함 -->
+            <customFields>{"app":"algovision-backend"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- 2️⃣ Access 로그 파일 (모든 요청, INFO 이상) -->
+    <appender name="ACCESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/access.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [TRACE:%X{traceId}] [USER:%X{userId}] %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+
+        <!-- Access 로그는 ERROR 제외 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 3️⃣ Error 로그 파일 (ERROR 이상만 별도 기록) -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [TRACE:%X{traceId}] [USER:%X{userId}] %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+
+        <!-- Error 로그만 통과 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!-- 4️⃣ 루트 로거 (모든 로그 흐름 제어) -->
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE" />
+        <appender-ref ref="ACCESS_FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+
+    <!-- 5️⃣ 패키지별 레벨 세분화 -->
+    <logger name="com.algovision" level="DEBUG" />
+    <logger name="org.springframework" level="WARN" />
+
+</configuration>

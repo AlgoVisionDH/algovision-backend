@@ -1,0 +1,63 @@
+== 공통 오류 응답 (Error Response)
+:toc: left
+:toclevels: 2
+:sectnums:
+
+이 섹션은 API 호출 시 발생할 수 있는 공통 오류 응답의 형식을 정의합니다.
+
+모든 오류 응답은 동일한 JSON 구조를 가지며,
+`traceId`는 요청 추적 및 서버 로그 상의 추적에 사용됩니다.
+
+== 📦 오류 응답 구조
+
+|===
+|Field |Type |Description
+
+|`status` |Number |HTTP 상태 코드 (예: `400`, `401`, `404`, `409`, `500`)
+|`message` |String |오류 메시지 (예: `"이메일이 이미 사용 중입니다."`)
+|`traceId` |String |요청 추적용 Trace ID (로그 추적 및 디버깅용)
+|===
+
+예시 응답:
+
+[source,json,indent=0]
+----
+{
+  "status": 400,
+  "message": "새 비밀번호와 확인이 일치하지 않습니다.",
+  "traceId": "d87a8f13-ec20-44c7-9b2a-12234fddac3a"
+}
+----
+
+== 🚨 주요 상태 코드 요약
+
+|===
+|Status |의미 |예시 메시지
+
+|400 |잘못된 요청 (유효성 검증 실패 등) |`"비밀번호 형식이 올바르지 않습니다."`
+|401 |인증 실패 (로그인 필요 또는 토큰 만료) |`"토큰이 만료되었습니다. 다시 로그인하세요."`
+|403 |권한 부족 (인가 실패) |`"접근 권한이 없습니다."`
+|404 |리소스 없음 |`"회원을 찾을 수 없습니다."`
+|409 |중복 또는 충돌 |`"이미 등록된 이메일입니다."`
+|500 |서버 내부 오류 |`"서버 내부 오류가 발생했습니다."`
+|===
+
+== 🔗 참조 API들
+
+다음 API에서 공통 오류 응답 구조를 사용합니다:
+
+* 회원가입 실패 (`members-signup-fail-*`)
+* 로그인 실패 (`members-login-fail-*`)
+* 비밀번호 변경 실패 (`members-change-password-fail-*`)
+* 닉네임 변경 실패 (`members-change-nickname-fail-*`)
+* 로그아웃 / 회원탈퇴 실패 (`members-logout-fail-*`, `members-withdraw-fail-*`)
+
+'''
+
+TIP:
+이 문서는 개별 API 문서에서 아래처럼 재사용할 수 있습니다:
+
+[source,adoc]
+----
+ include::common/error-response.adoc[]
+----

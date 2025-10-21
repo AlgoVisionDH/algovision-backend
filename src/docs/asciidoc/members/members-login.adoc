@@ -1,0 +1,20 @@
+= 로그인 API
+:toc: left
+:toclevels: 2
+
+== 로그인 성공
+로그인 성공 시 회원 정보와 Access Token이 반환됩니다.
+
+operation::members-login-success[snippets='http-request,http-response,request-fields,response-fields']
+
+== 로그인 실패 - 잘못된 비밀번호
+입력한 비밀번호가 일치하지 않는 경우입니다.
+
+operation::members-login-fail-wrong-password[snippets='http-request,http-response,request-fields,response-fields']
+
+== 로그인 실패 - 존재하지 않는 이메일
+등록되지 않은 이메일로 로그인 시도 시 발생합니다.
+
+operation::members-login-fail-notfound-email[snippets='http-request,http-response,request-fields,response-fields']
+
+include::../common/error-response.adoc[]

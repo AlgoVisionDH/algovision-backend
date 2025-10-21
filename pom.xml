@@ -28,6 +28,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+        <snippetsDir>${project.build.directory}/generated-snippets</snippetsDir>
     </properties>
     <dependencies>
         <dependency>
@@ -40,6 +41,125 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.restdocs</groupId>
+            <artifactId>spring-restdocs-mockmvc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-apt -->
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.13.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.13.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.13.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>8.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -47,6 +167,60 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Asciidoctor로 REST Docs 조각을 묶어 문서(HTML) 생성 -->
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>html</backend>
+                            <sourceDirectory>src/docs/asciidoc</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-docs</outputDirectory>
+                            <attributes>
+                                <!-- 테스트가 생성한 스니펫 경로를 Asciidoctor에 전달 -->
+                                <snippets>${snippetsDir}</snippets>
+                            </attributes>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- Asciidoctor가 Spring REST Docs 블록 매크로 등을 인식하도록 -->
+                    <dependency>
+                        <groupId>org.springframework.restdocs</groupId>
+                        <artifactId>spring-restdocs-asciidoctor</artifactId>
+                        <version>3.0.3</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-docs</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,72 @@
+### 초기화 (더미 요청)
+GET http://localhost:8080
+
+> {% client.global.clear(); %}
+
+### 회원가입
+POST http://localhost:8080/api/members/signup
+Content-Type: application/json
+
+{
+  "email": "testuser@test.com",
+  "password": "password123",
+  "passwordConfirm": "password123",
+  "nickname": "테스터"
+}
+
+### 로그인
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "email": "testuser@test.com",
+  "password": "password123"
+}
+
+> {%client.global.set("accessToken", response.body.accessToken); %}
+
+### 내 정보 조회
+GET http://localhost:8080/api/members/me
+Authorization: Bearer {{accessToken}}
+
+### 닉네임 변경
+POST http://localhost:8080/api/members/change-nickname
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "nickname": "테스터_닉변경"
+}
+
+### 비밀번호 변경
+POST http://localhost:8080/api/members/change-password
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "currentPassword": "password123",
+  "newPassword": "newpassword456",
+  "newPasswordConfirm": "newpassword456"
+}
+
+### 로그아웃
+POST http://localhost:8080/api/members/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 다시 로그인
+POST http://localhost:8080/api/members/login
+Content-Type: application/json
+
+{
+  "email": "testuser@test.com",
+  "password": "newpassword456"
+}
+
+> {%client.global.set("accessToken", response.body.accessToken); %}
+
+### 회원 탈퇴
+POST http://localhost:8080/api/members/withdraw
+Authorization: Bearer {{accessToken}}
+
+> {% client.global.clear(); %}

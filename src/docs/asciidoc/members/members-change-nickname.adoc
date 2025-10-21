@@ -1,0 +1,22 @@
+= 닉네임 변경 API
+:toc: left
+:sectnums:
+
+닉네임 변경 API는 로그인된 사용자가 자신의 닉네임을 새로운 값으로 변경합니다.
+닉네임은 중복될 수 없으며, 이미 존재하는 닉네임으로 변경 시 오류가 발생합니다.
+
+== ✅ 닉네임 변경 성공
+
+유효한 토큰과 새로운 닉네임으로 요청 시, 닉네임이 성공적으로 변경됩니다.
+
+operation::members-change-nickname-success[snippets='http-request,http-response,request-fields,response-fields']
+
+== ⚠️ 닉네임 변경 실패
+
+=== 중복된 닉네임
+
+이미 사용 중인 닉네임으로 변경을 시도할 경우 발생합니다.
+
+operation::members-change-nickname-fail-duplicate[snippets='http-request,http-response,response-fields']
+
+include::../common/error-response.adoc[]
