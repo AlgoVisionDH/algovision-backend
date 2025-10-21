@@ -112,9 +112,6 @@ jobs:
             sed -i "s#ghcr.io/.*/.*:sha-.*#${IMAGE}:${SHA_TAG}#g" "$COMPOSE_FILE"
             docker compose -f "$COMPOSE_FILE" pull
             docker compose --env-file ../.env -f "$COMPOSE_FILE" up -d --wait
-            
-            # 헬스체크
-            curl -fsS http://localhost:8080/actuator/health || true
 
             # dangling 이미지 정리
             docker image prune -f
