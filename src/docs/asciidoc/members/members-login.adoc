@@ -18,4 +18,4 @@ operation::members-login-fail-wrong-password[snippets='http-request,http-respons
 
 operation::members-login-fail-notfound-email[snippets='http-request,http-response,request-fields,response-fields']
 
-include::{common}/error-response.adoc[]
+include::../common/error-response.adoc[]
