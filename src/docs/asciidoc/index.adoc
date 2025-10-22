@@ -12,13 +12,13 @@
 
 아래 항목들은 개별 페이지로 구성되어 있습니다.
 
-* link:members/members-login.adoc[회원가입 API]
-* link:members/members-login.adoc[로그인 API]
-* link:members/members-me.adoc[내 정보 조회 API]
-* link:members/members-logout.adoc[로그아웃 API]
-* link:members/members-withdraw.adoc[회원 탈퇴 API]
-* link:members/members-change-password.adoc[비밀번호 변경 API]
-* link:members/members-change-nickname.adoc[닉네임 변경 API]
+* link:members/members-login.html[회원가입 API]
+* link:members/members-login.html[로그인 API]
+* link:members/members-me.html[내 정보 조회 API]
+* link:members/members-logout.html[로그아웃 API]
+* link:members/members-withdraw.html[회원 탈퇴 API]
+* link:members/members-change-password.html[비밀번호 변경 API]
+* link:members/members-change-nickname.html[닉네임 변경 API]
 
 == 공통 오류 응답
 
