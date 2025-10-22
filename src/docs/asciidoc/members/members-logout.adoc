@@ -1,7 +1,6 @@
 = 로그아웃 API
 :toc: left
 :sectnums:
-:common: {docdir}/../common
 
 로그아웃 API는 현재 로그인된 사용자의 JWT 토큰을 만료 처리하고,
 서버 측에서 Refresh Token을 삭제합니다.
@@ -13,4 +12,4 @@ Refresh Token은 Redis에서 삭제되며, Access Token은 블랙리스트에 �
 
 operation::members-logout-success[snippets='http-request,http-response']
 
-include::{common}/error-response.adoc[]
+include::../common/error-response.adoc[]

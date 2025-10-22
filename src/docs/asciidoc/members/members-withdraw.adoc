@@ -1,7 +1,6 @@
 = 회원 탈퇴 API
 :toc: left
 :sectnums:
-:common: {docdir}/../common
 
 회원 탈퇴 API는 현재 로그인한 사용자의 계정을 **소프트 삭제(soft delete)** 처리합니다.
 요청 시 서버는 해당 회원의 Refresh Token을 삭제하고, Access Token을 블랙리스트에 등록합니다.
@@ -12,4 +11,4 @@
 
 operation::members-withdraw-success[snippets='http-request,http-response']
 
-include::{common}/error-response.adoc[]
+include::../common/error-response.adoc[]
