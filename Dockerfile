@@ -4,6 +4,8 @@ FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
 COPY . .
 
+RUN chmod +x mvnw
+
 # Maven Wrapper로 빌드 (테스트는 이미 CI에서 하므로 skip)
 RUN ./mvnw clean package -DskipTests
 
