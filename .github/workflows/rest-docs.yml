@@ -43,7 +43,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build REST Docs
-        run: ./mvnw clean test package -Dmaven.test.failure.ignore=true -Dspring.profiles.active=test-docs
+        run: ./mvnw clean test package -Dtest=MemberControllerIntegrationTest -Dspring.profiles.active=test-docs
 
       - name: Copy snippets into docs
         run: |

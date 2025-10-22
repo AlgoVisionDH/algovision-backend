@@ -194,8 +194,7 @@
                             <attributes>
                                 <!-- 테스트가 생성한 스니펫 경로를 Asciidoctor에 전달 -->
                                 <snippets>${snippetsDir}</snippets>
-                                <basedir>${project.basedir}/src/docs/asciidoc</basedir>
-                                <allow-uri-read>true</allow-uri-read>
+                                <allow-uri-read></allow-uri-read>
                             </attributes>
                         </configuration>
                     </execution>
