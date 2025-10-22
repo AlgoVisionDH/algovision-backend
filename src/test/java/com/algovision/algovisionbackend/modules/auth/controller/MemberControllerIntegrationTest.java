@@ -1,5 +1,6 @@
 package com.algovision.algovisionbackend.modules.auth.controller;
 
+import com.algovision.algovisionbackend.config.MockRedisConfig;
 import com.algovision.algovisionbackend.modules.auth.domain.Member;
 import com.algovision.algovisionbackend.modules.auth.dto.ChangePasswordRequest;
 import com.algovision.algovisionbackend.modules.auth.dto.LoginRequest;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,9 +35,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("test-docs")
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 @Transactional
+@Import(MockRedisConfig.class)
 class MemberControllerIntegrationTest {
 
     @Autowired
@@ -46,6 +49,7 @@ class MemberControllerIntegrationTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
