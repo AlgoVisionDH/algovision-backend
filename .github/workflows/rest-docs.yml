@@ -45,6 +45,9 @@ jobs:
       - name: Build REST Docs
         run: ./mvnw clean test package -Dmaven.test.failure.ignore=true -Dspring.profiles.active=prod
 
+      - name: Copy snippets into docs
+        run: cp -r target/generated-snippets target/generated-docs/snippets
+
       - name: Upload REST Docs artifact
         uses: actions/upload-pages-artifact@v3
         with:

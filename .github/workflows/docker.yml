@@ -9,6 +9,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_REPO: algovisiondh/algovision-backend
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build-and-push:
     if: |
