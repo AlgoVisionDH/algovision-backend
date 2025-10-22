@@ -18,5 +18,3 @@ operation::members-change-nickname-success[snippets='http-request,http-response,
 이미 사용 중인 닉네임으로 변경을 시도할 경우 발생합니다.
 
 operation::members-change-nickname-fail-duplicate[snippets='http-request,http-response,response-fields']
-
-include::../common/error-response.adoc[]

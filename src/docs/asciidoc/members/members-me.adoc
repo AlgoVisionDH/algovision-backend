@@ -16,5 +16,3 @@ operation::members-get-me-success[snippets='http-request,http-response,response-
 === 잘못된 토큰
 
 operation::members-get-me-fail-invalid-token[snippets='http-request,http-response,response-fields']
-
-include::../common/error-response.adoc[]

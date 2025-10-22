@@ -10,5 +10,3 @@
 유효한 토큰을 가진 사용자가 요청할 경우, 정상적으로 회원 탈퇴가 처리됩니다.
 
 operation::members-withdraw-success[snippets='http-request,http-response']
-
-include::../common/error-response.adoc[]

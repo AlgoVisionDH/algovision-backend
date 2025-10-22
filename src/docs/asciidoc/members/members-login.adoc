@@ -16,5 +16,3 @@ operation::members-login-fail-wrong-password[snippets='http-request,http-respons
 등록되지 않은 이메일로 로그인 시도 시 발생합니다.
 
 operation::members-login-fail-notfound-email[snippets='http-request,http-response,request-fields,response-fields']
-
-include::../common/error-response.html

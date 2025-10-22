@@ -11,5 +11,3 @@
 Refresh Token은 Redis에서 삭제되며, Access Token은 블랙리스트에 등록됩니다.
 
 operation::members-logout-success[snippets='http-request,http-response']
-
-include::../common/error-response.adoc[]

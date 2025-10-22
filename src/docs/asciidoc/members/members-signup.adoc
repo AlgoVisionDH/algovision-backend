@@ -20,5 +20,3 @@ operation::members-signup-fail-duplicate-nickname[snippets='http-request,http-re
 
 === 비밀번호 불일치
 operation::members-signup-fail-password-mismatch[snippets='http-request,http-response,request-fields,response-fields']
-
-include::../common/error-response.adoc[]
