@@ -12,7 +12,7 @@
 
 아래 항목들은 개별 페이지로 구성되어 있습니다.
 
-* link:members/members-login.html[회원가입 API]
+* link:members/members-signup.html[회원가입 API]
 * link:members/members-login.html[로그인 API]
 * link:members/members-me.html[내 정보 조회 API]
 * link:members/members-logout.html[로그아웃 API]
