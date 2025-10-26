@@ -3,20 +3,56 @@
 :sectnums:
 
 == 🧾 개요
-회원가입 API는 신규 사용자를 등록하는 엔드포인트입니다.
-입력값 검증(이메일 중복, 닉네임 중복, 비밀번호 불일치 등)을 수행하며,
-정상 등록 시 새 회원의 정보를 반환합니다.
+회원가입 API는 신규 사용자를 등록하기 전에 이메일 인증을 요구합니다.
+이메일 인증 절차를 통해 입력된 이메일 주소의 유효성을 검증한 뒤,
+정상 인증된 사용자만 회원가입을 완료할 수 있습니다.
 
-== ✅ 회원가입 성공
+== ✉️ 이메일 인증 절차
+
+=== 1️⃣ 인증 코드 전송
+이메일 주소를 입력하면 인증 코드가 발송됩니다.
+
+operation::email-send-success[snippets='http-request,http-response,request-fields']
+
+[WARNING]
+====
+요청이 너무 빈번할 경우,
+**TooManyEmailRequestsException**이 발생하여 일정 시간 동안 재요청이 제한됩니다.
+====
+operation::email-send-fail-too-many-requests[snippets='http-request,http-response,request-fields,response-fields']
+
+=== 2️⃣ 인증 코드 검증
+이메일로 수신한 인증 코드를 입력하여 검증을 수행합니다.
+
+operation::email-verify-success[snippets='http-request,http-response,request-fields']
+
+[NOTE]
+====
+인증 코드가 잘못되었거나 만료된 경우
+**InvalidVerificationCodeException**이 발생합니다.
+====
+operation::email-verify-fail-invalid-code[snippets='http-request,http-response,request-fields,response-fields']
+
+== 🧾 회원가입 절차
+
+=== ✅ 회원가입 성공
+이메일 인증을 완료한 사용자는 회원가입을 진행할 수 있습니다.
+
 operation::members-signup-success[snippets='http-request,http-response,request-fields,response-fields']
 
-== ⚠️ 회원가입 실패
+=== ⚠️ 회원가입 실패
 
-=== 이메일 중복
+==== 이메일 미인증
+이메일 인증을 완료하지 않은 상태에서 회원가입을 시도하면
+**EmailNotVerifiedException**이 발생합니다.
+
+operation::members-signup-fail-email-not-verified[snippets='http-request,http-response,request-fields,response-fields']
+
+==== 이메일 중복
 operation::members-signup-fail-duplicate-email[snippets='http-request,http-response,request-fields,response-fields']
 
-=== 닉네임 중복
+==== 닉네임 중복
 operation::members-signup-fail-duplicate-nickname[snippets='http-request,http-response,request-fields,response-fields']
 
-=== 비밀번호 불일치
+==== 비밀번호 불일치
 operation::members-signup-fail-password-mismatch[snippets='http-request,http-response,request-fields,response-fields']
