@@ -1,4 +1,4 @@
-package com.algovision.algovisionbackend.global.security;
+package com.algovision.algovisionbackend.global.security.config;
 
 import com.algovision.algovisionbackend.global.security.jwt.filter.JwtAuthenticationFilter;
 import com.algovision.algovisionbackend.global.security.jwt.filter.JwtExceptionFilter;
@@ -37,7 +37,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/members/signup",
-                                "/api/members/login"
+                                "/api/members/login",
+                                "/api/email/send",
+                                "api/email/verify"
                         ).permitAll()
                         .requestMatchers("/docs/**").hasRole("ADMIN")
                         .requestMatchers("/actuator/**").permitAll()
@@ -52,7 +54,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.addAllowedOriginPattern("http://localhost:*");
         config.addAllowedOriginPattern("https://algovision.co.kr");
