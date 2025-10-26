@@ -10,6 +10,8 @@ import com.algovision.algovisionbackend.modules.auth.exception.*;
 import com.algovision.algovisionbackend.modules.auth.mapper.MemberMapper;
 import com.algovision.algovisionbackend.modules.auth.repository.MemberRepository;
 import com.algovision.algovisionbackend.modules.auth.service.MemberService;
+import com.algovision.algovisionbackend.modules.email.exception.EmailNotVerifiedException;
+import com.algovision.algovisionbackend.modules.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,9 +29,14 @@ public class MemberServiceImpl implements MemberService {
     private final JwtProperties jwtProperties;
     private final JwtProvider jwtProvider;
 
+    private final EmailService emailService;
+
     @Override
     @Transactional
     public MemberResponse signup(SignUpRequest request) {
+        if (!emailService.isEmailVerified(request.email())) {
+            throw new EmailNotVerifiedException(request.email());
+        }
         if (memberRepository.existsByEmail(request.email())) {
             throw new DuplicateEmailException(request.email());
         }
