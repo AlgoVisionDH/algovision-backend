@@ -2,6 +2,9 @@ package com.algovision.algovisionbackend.modules.auth.controller;
 
 import com.algovision.algovisionbackend.modules.auth.dto.LoginRequest;
 import com.algovision.algovisionbackend.modules.auth.dto.SignUpRequest;
+import com.algovision.algovisionbackend.modules.email.dto.EmailSendRequest;
+import com.algovision.algovisionbackend.modules.email.dto.VerifyEmailRequest;
+import com.algovision.algovisionbackend.modules.email.service.EmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
@@ -12,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,14 +30,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 class MemberFlowIntegrationTest {
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+
+    @MockitoSpyBean
+    private EmailService emailService;
 
     @Test
-    @DisplayName("회원가입 -> 로그인 -> 내정보조회 -> 로그아웃 -> 재로그인실패 전체 플로우")
+    @DisplayName("이메일 인증 -> 회원가입 -> 로그인 -> 내정보조회 -> 로그아웃 -> 재로그인실패 전체 플로우")
     void fullMemberFlowTest() throws Exception {
+        // 이메일 인증 코드 요청
+        var emailRequest = new EmailSendRequest("test@test.com");
+        mockMvc.perform(post("/api/email/send")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emailRequest)))
+                .andExpect(status().isOk());
+
+        // 이메일 인증 코드 검증 (테스트용으로 강제 성공 처리)
+        var verifyRequest = new VerifyEmailRequest("test@test.com", "123456");
+        doNothing().when(emailService).verifyCode("test@test.com", "123456");
+
+        mockMvc.perform(post("/api/email/verify")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(verifyRequest)))
+                .andExpect(status().isOk());
+
         // 회원가입
         var signup = new SignUpRequest("test@test.com", "password123!", "password123!", "nickname");
         mockMvc.perform(post("/api/members/signup")

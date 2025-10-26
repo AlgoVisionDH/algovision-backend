@@ -7,6 +7,7 @@ import com.algovision.algovisionbackend.modules.auth.dto.LoginRequest;
 import com.algovision.algovisionbackend.modules.auth.dto.SignUpRequest;
 import com.algovision.algovisionbackend.modules.auth.dto.UpdateNicknameRequest;
 import com.algovision.algovisionbackend.modules.auth.repository.MemberRepository;
+import com.algovision.algovisionbackend.modules.email.service.EmailService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,10 +22,12 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -39,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 @Transactional
 @Import(MockRedisConfig.class)
-class MemberControllerIntegrationTest {
+class MemberControllerRestDocsTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,6 +55,9 @@ class MemberControllerIntegrationTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @MockitoSpyBean
+    private EmailService emailService;
 
     String accessToken;
 
@@ -85,6 +91,8 @@ class MemberControllerIntegrationTest {
                 "password123!",
                 "nickname2"
         );
+
+        doReturn(true).when(emailService).isEmailVerified(request.email());
 
         mockMvc.perform(post("/api/members/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,6 +150,38 @@ class MemberControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("회원가입 실패 - 이메일 미인증 - REST Docs 생성")
+    void signup_fail_emailNotVerified_generateDocs() throws Exception {
+        SignUpRequest request = new SignUpRequest(
+                "test2@test.com",
+                "password123!",
+                "password123!",
+                "nickname"
+        );
+
+        mockMvc.perform(post("/api/members/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden())
+                .andDo(print())
+                .andDo(document("members-signup-fail-email-not-verified",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 이메일"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                                fieldWithPath("passwordConfirm").type(JsonFieldType.STRING).description("비밀번호 확인"),
+                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("오류 메시지"),
+                                fieldWithPath("traceId").type(JsonFieldType.STRING).description("요청 추적용 Trace ID")
+                        )
+                ));
+    }
+
+    @Test
     @DisplayName("회원가입 실패 - 이메일 중복 - REST Docs 생성")
     void signup_fail_duplicateEmail_generateDocs() throws Exception {
         SignUpRequest request = new SignUpRequest(
@@ -150,6 +190,8 @@ class MemberControllerIntegrationTest {
                 "password123!",
                 "nickname2"
         );
+
+        doReturn(true).when(emailService).isEmailVerified(request.email());
 
         mockMvc.perform(post("/api/members/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -182,6 +224,8 @@ class MemberControllerIntegrationTest {
                 "password123!",
                 "nickname"
         );
+
+        doReturn(true).when(emailService).isEmailVerified(request.email());
 
         mockMvc.perform(post("/api/members/signup")
                         .contentType(MediaType.APPLICATION_JSON)

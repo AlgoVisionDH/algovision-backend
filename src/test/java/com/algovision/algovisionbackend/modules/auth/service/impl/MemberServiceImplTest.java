@@ -10,6 +10,8 @@ import com.algovision.algovisionbackend.modules.auth.dto.*;
 import com.algovision.algovisionbackend.modules.auth.exception.*;
 import com.algovision.algovisionbackend.modules.auth.mapper.MemberMapper;
 import com.algovision.algovisionbackend.modules.auth.repository.MemberRepository;
+import com.algovision.algovisionbackend.modules.email.exception.EmailNotVerifiedException;
+import com.algovision.algovisionbackend.modules.email.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,8 @@ class MemberServiceImplTest {
     private JwtProperties jwtProperties;
     @Mock
     private JwtProvider jwtProvider;
+    @Mock
+    private EmailService emailService;
 
     private AuthTokenService authTokenService;
     private MemberServiceImpl memberService;
@@ -56,7 +60,8 @@ class MemberServiceImplTest {
                 jwtRedisService,
                 authTokenService,
                 jwtProperties,
-                jwtProvider
+                jwtProvider,
+                emailService
         );
     }
 
@@ -70,6 +75,7 @@ class MemberServiceImplTest {
                 "nickname"
         );
 
+        when(emailService.isEmailVerified(anyString())).thenReturn(true);
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
         when(memberRepository.existsByNickname(anyString())).thenReturn(false);
         Member saved = Member.builder()
@@ -87,10 +93,26 @@ class MemberServiceImplTest {
                 LocalDateTime.now()
         ));
 
+        when(emailService.isEmailVerified(anyString())).thenReturn(true);
         MemberResponse response = memberService.signup(request);
 
         assertNotNull(response);
         verify(memberRepository).save(any(Member.class));
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 인증되지 않은 이메일")
+    void signup_fail_unverifiedEmail() {
+        SignUpRequest request = new SignUpRequest(
+                "test@test.com",
+                "password123!",
+                "password123!",
+                "nickname"
+        );
+
+        when(emailService.isEmailVerified(anyString())).thenReturn(false);
+
+        assertThrows(EmailNotVerifiedException.class, () -> memberService.signup(request));
     }
 
     @Test
@@ -103,6 +125,7 @@ class MemberServiceImplTest {
                 "nickname"
         );
 
+        when(emailService.isEmailVerified(anyString())).thenReturn(true);
         when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
         assertThrows(DuplicateEmailException.class, () -> memberService.signup(request));
@@ -120,6 +143,7 @@ class MemberServiceImplTest {
                 "nickname"
         );
 
+        when(emailService.isEmailVerified(anyString())).thenReturn(true);
         when(memberRepository.existsByEmail(anyString())).thenReturn(false);
         when(memberRepository.existsByNickname(anyString())).thenReturn(true);
 
